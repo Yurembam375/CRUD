@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/service/Apiservice.dart';
+import 'package:frontend/widget/buttonwidget.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController nameController = TextEditingController();
+    final TextEditingController phoneController = TextEditingController();
+    final TextEditingController ageController = TextEditingController();
+
+    void postData() {
+      Map<String, dynamic> data = {
+        'pname': nameController.text,
+        'pphone': phoneController.text,
+        'pAge': ageController.text
+      };
+      Apiservice.addPerson(data);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("CRUD with Node.js"),
@@ -33,15 +48,49 @@ class HomeScreen extends StatelessWidget {
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 children: [
-                  _buildCrudButton(
+                  ButtonWidget(
                     title: "Create",
                     icon: Icons.add,
                     color: Colors.green,
                     onPressed: () {
-                      // Create functionality
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text("Create"),
+                            actions: [
+                              TextField(
+                                controller: nameController,
+                                decoration:
+                                    const InputDecoration(hintText: 'Enter a name'),
+                              ),
+                              TextField(
+                                controller: phoneController,
+                                decoration: const InputDecoration(
+                                    hintText: 'Enter a phone no'),
+                              ),
+                              TextField(
+                                controller: ageController,
+                                decoration:
+                                    const InputDecoration(hintText: 'Enter a age'),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Center(
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      postData();
+                                    },
+                                    child: const Text("Summit")),
+                              )
+                            ],
+                          );
+                        },
+                      );
                     },
                   ),
-                  _buildCrudButton(
+                  ButtonWidget(
                     title: "Read",
                     icon: Icons.visibility,
                     color: Colors.blue,
@@ -49,7 +98,7 @@ class HomeScreen extends StatelessWidget {
                       // Read functionality
                     },
                   ),
-                  _buildCrudButton(
+                  ButtonWidget(
                     title: "Update",
                     icon: Icons.edit,
                     color: Colors.orange,
@@ -57,7 +106,7 @@ class HomeScreen extends StatelessWidget {
                       // Update functionality
                     },
                   ),
-                  _buildCrudButton(
+                  ButtonWidget(
                     title: "Delete",
                     icon: Icons.delete,
                     color: Colors.red,
@@ -69,46 +118,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCrudButton({
-    required String title,
-    required IconData icon,
-    required Color color,
-    required VoidCallback onPressed,
-  }) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: color.withOpacity(0.1),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 40, color: color),
-              const SizedBox(height: 10),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
